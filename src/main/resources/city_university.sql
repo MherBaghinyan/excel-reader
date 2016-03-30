@@ -69,7 +69,7 @@ PRIMARY KEY (`id`)
 
 
 DROP TABLE IF EXISTS `positions`;
-CREATE TABLE `past_activities` (
+CREATE TABLE `positions` (
 `id` bigint(20) NOT NULL AUTO_INCREMENT,
 `person_id` bigint(20) NOT NULL,
 `start_date` datetime,
