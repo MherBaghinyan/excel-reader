@@ -45,23 +45,12 @@ PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `past_activities`;
-CREATE TABLE `past_activities` (
+DROP TABLE IF EXISTS `activities`;
+CREATE TABLE `activities` (
 `id` bigint(20) NOT NULL AUTO_INCREMENT,
 `person_id` bigint(20) NOT NULL,
 `start_date` datetime,
 `end_date` datetime,
-`organization` varchar(50),
-`role` varchar(50),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `current_other_activities`;
-CREATE TABLE `current_other_activities` (
-`id` bigint(20) NOT NULL AUTO_INCREMENT,
-`person_id` bigint(20) NOT NULL,
-`start_date` datetime,
 `organization` varchar(50),
 `role` varchar(50),
 PRIMARY KEY (`id`)
