@@ -1,16 +1,18 @@
 package com.university.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Created by Mher on 12/22/2015.
  */
 @Entity
-public class Person {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private long id;
     private String name;
     @Column(name = "date_of_birth")
@@ -66,5 +68,17 @@ public class Person {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", birthDate=" + birthDate +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", nationality='" + nationality + '\'' +
+                '}';
     }
 }

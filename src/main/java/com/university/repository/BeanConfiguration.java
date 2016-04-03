@@ -35,7 +35,7 @@ public class BeanConfiguration {
         LocalContainerEntityManagerFactoryBean lef = new LocalContainerEntityManagerFactoryBean();
         lef.setDataSource(dataSource);
         lef.setJpaVendorAdapter(jpaVendorAdapter);
-        lef.setPackagesToScan("com.pretech");
+        lef.setPackagesToScan("com.university.entity");
         return lef;
     }
     @Bean

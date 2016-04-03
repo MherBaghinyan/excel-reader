@@ -3,6 +3,7 @@ package com.university.main;
 import com.university.entity.Person;
 import com.university.repository.BeanConfiguration;
 import com.university.repository.PersonRepository;
+import com.university.util.ExcelReader;
 import com.university.util.WordReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -24,19 +25,16 @@ public class CSVRunner {
 
     public static void main(String[] args) {
 
-//        AbstractApplicationContext context = new AnnotationConfigApplicationContext(
-//                BeanConfiguration.class);
-//        PersonRepository repository = context
-//                .getBean(PersonRepository.class);
-//        Person person = new Person();
-//        person.setAge(10);
-//        person.setName("Mher");
-//        repository.save(person);
+        AbstractApplicationContext context = new AnnotationConfigApplicationContext(
+                BeanConfiguration.class);
+        PersonRepository personRepository = context
+                .getBean(PersonRepository.class);
 
+        //WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\sample.docx");
 
-        WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\sample.docx");
+        ExcelReader.readProfessorDataFromExcel("C:\\Users\\Gebruiker\\Desktop\\word-list\\board_.xlsx", personRepository);
 
-//        ((AbstractApplicationContext) context).close();
+        ((AbstractApplicationContext) context).close();
     }
 
     private static String selectDirectory(String path) {
