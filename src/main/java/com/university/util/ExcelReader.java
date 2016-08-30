@@ -12,7 +12,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * http://mxtoolbox.com/SuperToolX.aspx
@@ -21,40 +23,73 @@ public class ExcelReader {
 
     public static List<String> readDuplicateEmailsFromExcel(String path){
 
-        List<String> duplicateEmails = new ArrayList<String>();
+        List<String> cleanedEmails = new ArrayList<String>();
+        List<String> b = new ArrayList<String>();
 
         try {
-            XSSFWorkbook workBook = new XSSFWorkbook(new FileInputStream(path));
+            FileInputStream fis = new FileInputStream(path);
+            XSSFWorkbook workBook = new XSSFWorkbook(fis);
             Sheet sheet = workBook.getSheetAt(0);
 
-            int first = sheet.getFirstRowNum();
+            int first = sheet.getFirstRowNum() + 1;
             int last = sheet.getLastRowNum();
 
-            OwnEmailValidator validator = new OwnEmailValidator();
-
+            // B = 995
+            // A = 3373
+            // C = 2024
             DataFormatter df = new DataFormatter();
-            for(int i = first; i < last; i++){
 
-                XSSFRow row = (XSSFRow) sheet.getRow(i);
-                XSSFCell cell_2 = row.getCell(2);
-                String value = df.formatCellValue(cell_2);
-
-                if(!validator.validate(value) && !value.equals("")) {
-                    System.out.println(value);
+            try {
+                for (int j = first; j <= 2023; j++) {
+                    XSSFRow row_j = (XSSFRow) sheet.getRow(j);
+                    XSSFCell cell_1 = row_j.getCell(3);
+                    System.out.println(" - " + j + " - " + df.formatCellValue(cell_1));
+                    if (!b.contains(df.formatCellValue(cell_1))) {
+                        b.add(df.formatCellValue(cell_1).toLowerCase());
+                    }
                 }
-
-                if (!duplicateEmails.contains(value)) {
-                    duplicateEmails.add(value);
-                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
+            if(b.contains("nancylynnealbertson@gmail.com") || b.contains("marne@pixerati.com")) {
+                System.out.println("");
+            }
+
+            try {
+            for(int i = first; i < 223; i++){
+                XSSFRow row_i = (XSSFRow) sheet.getRow(i);
+                XSSFCell cell_0 = row_i.getCell(0);
+                String value_0 = df.formatCellValue(cell_0);
+                if (b.contains(value_0.toLowerCase())) {
+                    cell_0.setCellValue("");//879
+                } else if(!cleanedEmails.contains(value_0.toLowerCase())) {
+                    cleanedEmails.add(value_0.toLowerCase()); //3373 - 879
+                }
+
+            }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            for(int i = first; i < cleanedEmails.size(); i++) {
+                XSSFRow row = (XSSFRow) sheet.getRow(i);
+                row.createCell(4).setCellValue(cleanedEmails.get(i));
+            }
+
+            fis.close();
+
+            // update excel file
+            FileOutputStream outFile =new FileOutputStream(new File(path));
+            workBook.write(outFile);
+            outFile.close();
 
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
-        return duplicateEmails;
+        return cleanedEmails;
     }
     public static List<String> readProfessorDataFromExcel(String path, PersonRepository personRepository){
 

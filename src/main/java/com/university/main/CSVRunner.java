@@ -25,16 +25,23 @@ public class CSVRunner {
 
     public static void main(String[] args) {
 
-        AbstractApplicationContext context = new AnnotationConfigApplicationContext(
-                BeanConfiguration.class);
-        PersonRepository personRepository = context
-                .getBean(PersonRepository.class);
+//        AbstractApplicationContext context = new AnnotationConfigApplicationContext(
+//                BeanConfiguration.class);
+//        PersonRepository personRepository = context
+//                .getBean(PersonRepository.class);
+//
+//
+//
+//        ExcelReader.readProfessorDataFromExcel("C:\\Users\\Gebruiker\\Desktop\\word-list\\board_.xlsx", personRepository);
+//
+//        ((AbstractApplicationContext) context).close();
 
-        //WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\sample.docx");
+//        WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\BoardEx Report - Dec 22- 2015- 16 12 21.docx");
+        String path = "D:\\excel\\acne-questionnaire.xlsx";
 
-        ExcelReader.readProfessorDataFromExcel("C:\\Users\\Gebruiker\\Desktop\\word-list\\board_.xlsx", personRepository);
+        List<String> duplicates = ExcelReader.readDuplicateEmailsFromExcel(path);
 
-        ((AbstractApplicationContext) context).close();
+//        ExcelReader.removeDuplicatesAndValidateExcel(path, duplicates);
     }
 
     private static String selectDirectory(String path) {
