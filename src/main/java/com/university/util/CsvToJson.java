@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -18,15 +19,14 @@ public class CsvToJson {
 
     public static void convert() throws IOException {
 
-
-        String sourceFolder = "";
-        String destFileName = "";
+        String destFileName = "D:\\epam\\mismatches_input.csv";
+        String outputFileName = "D:\\epam\\mismatches_output.json";
 
         File sourceFolderFile = new File(destFileName);
         //StringUtils.endsWithIgnoreCase(name, ".csv");
 
 
-        FileWriter out = new FileWriter(destFileName);
+        FileWriter out = new FileWriter(outputFileName);
         CSVPrinter csvPrinter = null;
 
         String[] headers = null;
@@ -39,18 +39,22 @@ public class CsvToJson {
             }
 
             String[] values = new String[headers.length];
+
             for (CSVRecord record : csvParser) {
+
+                JSONObject jsonOutput = new JSONObject();
 
                 for (int i = 0; i < headers.length; i++) {
                     String header = headers[i];
                     if (record.isMapped(header)) {
                         values[i] = record.get(header);
+                        jsonOutput.append(header, values[i]);
                     } else {
                         values[i] = "";
                     }
                 }
 
-                csvPrinter.printRecord(values);
+                csvPrinter.printRecord(jsonOutput);
             }
 
         }

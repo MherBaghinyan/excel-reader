@@ -3,6 +3,7 @@ package com.university.main;
 import com.university.entity.Person;
 import com.university.repository.BeanConfiguration;
 import com.university.repository.PersonRepository;
+import com.university.util.CsvToJson;
 import com.university.util.ExcelReader;
 import com.university.util.WordReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -38,11 +39,17 @@ public class CSVRunner {
 //        ((AbstractApplicationContext) context).close();
 
 //        WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\BoardEx Report - Dec 22- 2015- 16 12 21.docx");
-        String path = "D:\\excel\\latest-purchases.xlsx";
-
-        List<String> duplicates = ExcelReader.readDuplicateEmailsFromExcel(path);
+//        String path = "D:\\excel\\latest-purchases.xlsx";
+//
+//        List<String> duplicates = ExcelReader.readDuplicateEmailsFromExcel(path);
 
 //        ExcelReader.removeDuplicatesAndValidateExcel(path, duplicates);
+
+        try {
+            CsvToJson.convert();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String selectDirectory(String path) {
