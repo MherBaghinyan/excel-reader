@@ -10,6 +10,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * http://www.pretechsol.com/2013/11/springdata-jpa-with-mysql-example.html#.VnlFwvl96Uk
@@ -37,7 +38,7 @@ public class CSVRunner {
 //        ((AbstractApplicationContext) context).close();
 
 //        WordReader.readWordDocument("C:\\Users\\Gebruiker\\Desktop\\word-list\\BoardEx Report - Dec 22- 2015- 16 12 21.docx");
-        String path = "D:\\excel\\acne-questionnaire.xlsx";
+        String path = "D:\\excel\\latest-purchases.xlsx";
 
         List<String> duplicates = ExcelReader.readDuplicateEmailsFromExcel(path);
 

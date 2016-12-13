@@ -2,6 +2,7 @@ package com.university.util;
 
 import com.university.entity.Person;
 import com.university.repository.PersonRepository;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -11,10 +12,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * http://mxtoolbox.com/SuperToolX.aspx
@@ -24,63 +25,88 @@ public class ExcelReader {
     public static List<String> readDuplicateEmailsFromExcel(String path){
 
         List<String> cleanedEmails = new ArrayList<String>();
-        List<String> b = new ArrayList<String>();
+        Map<String, String> clients = new HashMap<String, String>();
+        Map<String, Integer> remains = new HashMap<String, Integer>();
 
         try {
             FileInputStream fis = new FileInputStream(path);
             XSSFWorkbook workBook = new XSSFWorkbook(fis);
             Sheet sheet = workBook.getSheetAt(0);
 
-            int first = sheet.getFirstRowNum() + 1;
+            int first = sheet.getFirstRowNum() + 3;
             int last = sheet.getLastRowNum();
 
             // B = 995
             // A = 3373
             // C = 2024
             DataFormatter df = new DataFormatter();
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             try {
-                for (int j = first; j <= 2023; j++) {
+
+                for (int j = first; j <= 1873 - 1; j++) {
                     XSSFRow row_j = (XSSFRow) sheet.getRow(j);
-                    XSSFCell cell_1 = row_j.getCell(3);
-                    System.out.println(" - " + j + " - " + df.formatCellValue(cell_1));
-                    if (!b.contains(df.formatCellValue(cell_1))) {
-                        b.add(df.formatCellValue(cell_1).toLowerCase());
+                    XSSFCell cell_client = row_j.getCell(3);
+                    if(cell_client != null && df.formatCellValue(cell_client) != "") {
+                        XSSFCell cell_date = row_j.getCell(0);
+                        String clientName = df.formatCellValue(cell_client);
+                        String purchaseDate = df.formatCellValue(cell_date);
+
+                        System.out.println(" - " + j + " - " + clientName);
+                        if (clients.get(clientName) == null) {
+                            clients.put(clientName, purchaseDate);
+                            remains.put(clientName, j);
+                        } else {
+                            LocalDate lastDate = LocalDate.parse(clients.get(clientName), format);
+                            LocalDate current = LocalDate.parse(purchaseDate, format);
+                            if(current.isAfter(lastDate)) {
+                                clients.put(clientName, purchaseDate);
+                                remains.put(clientName, j);
+                            }
+                        }
                     }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
-            if(b.contains("nancylynnealbertson@gmail.com") || b.contains("marne@pixerati.com")) {
-                System.out.println("");
-            }
+//
+//            try {
+//
+//                ArrayList<Integer> remained = new ArrayList<Integer>(remains.values());
+//                for (int j = first; j <= 2145 - 1; j++) {
+//                    XSSFRow row_j = (XSSFRow) sheet.getRow(j);
+//                    XSSFCell cell_client = row_j.getCell(3);
+//                    XSSFCell colored_client = row_j.createCell(9);
+//                    if (cell_client != null && df.formatCellValue(cell_client) != "") {
+//                        String clientName = df.formatCellValue(cell_client);
+//                        if (remained.contains(j)) {
+//                            colored_client.setCellValue("keep");
+//                        }
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             try {
-            for(int i = first; i < 223; i++){
-                XSSFRow row_i = (XSSFRow) sheet.getRow(i);
-                XSSFCell cell_0 = row_i.getCell(0);
-                String value_0 = df.formatCellValue(cell_0);
-                if (b.contains(value_0.toLowerCase())) {
-                    cell_0.setCellValue("");//879
-                } else if(!cleanedEmails.contains(value_0.toLowerCase())) {
-                    cleanedEmails.add(value_0.toLowerCase()); //3373 - 879
+
+                for (int j = first; j <= 1873 - 1; j++) {
+                    XSSFRow row_j = (XSSFRow) sheet.getRow(j);
+                    XSSFCell colored_client = row_j.createCell(9);
+                    if (df.formatCellValue(colored_client) != "keep") {
+                        sheet.removeRow(row_j);
+                    }
                 }
 
-            }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
-            for(int i = first; i < cleanedEmails.size(); i++) {
-                XSSFRow row = (XSSFRow) sheet.getRow(i);
-                row.createCell(4).setCellValue(cleanedEmails.get(i));
+                e.printStackTrace();
             }
 
             fis.close();
 
             // update excel file
-            FileOutputStream outFile =new FileOutputStream(new File(path));
+            FileOutputStream outFile = new FileOutputStream(new File(path));
             workBook.write(outFile);
             outFile.close();
 
